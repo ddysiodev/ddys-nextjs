@@ -5,6 +5,9 @@
   "type": "module",
   "license": "MIT",
   "homepage": "https://ddys.io",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ddysiodev/ddys-nextjs.git"
