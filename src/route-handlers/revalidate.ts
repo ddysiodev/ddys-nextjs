@@ -17,12 +17,14 @@ export function createDdysRevalidateRouteHandler(options: DdysRevalidateRouteOpt
     getDdysConfigFromEnv(options.config);
     const body = await request.json().catch(() => ({}));
     const tag = typeof body.tag === 'string' ? body.tag : undefined;
+    const tagProfile = typeof body.tagProfile === 'string' ? body.tagProfile : undefined;
     const path = typeof body.path === 'string' ? body.path : undefined;
+    const pathType = body.pathType === 'layout' ? 'layout' : 'page';
     if (!tag && !path) {
       return Response.json({ success: false, message: 'Missing tag or path.' }, { status: 422 });
     }
-    revalidateDdys({ tag, path });
-    return Response.json({ success: true, data: { tag, path } });
+    revalidateDdys({ tag, tagProfile, path, pathType });
+    return Response.json({ success: true, data: { tag, tagProfile, path, pathType } });
   };
 }
 

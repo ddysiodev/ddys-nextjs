@@ -1,5 +1,11 @@
 import type { DdysQuery, DdysScalar } from '../types/ddys';
 
+interface QueryLimits {
+  maxLimit?: number;
+  maxPerPage?: number;
+  maxPage?: number;
+}
+
 export function scalar(value: unknown, fallback = ''): string {
   if (Array.isArray(value) || value === null || typeof value === 'object' || typeof value === 'function') {
     return fallback;
@@ -47,7 +53,7 @@ export function cleanQuery(query: DdysQuery = {}): Record<string, string> {
   return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)));
 }
 
-export function normalizeQueryValue(key: string, value: unknown, limits: Record<string, number> = {}): string | number {
+export function normalizeQueryValue(key: string, value: unknown, limits: QueryLimits = {}): string | number {
   const text = scalar(value);
   if (text === '') return '';
   if (key === 'limit') return intRange(text, 12, 1, limits.maxLimit ?? 50);
@@ -60,7 +66,7 @@ export function normalizeQueryValue(key: string, value: unknown, limits: Record<
   return text.slice(0, 255);
 }
 
-export function buildQuery(source: DdysQuery = {}, keys: string[], limits: Record<string, number> = {}): Record<string, string | number> {
+export function buildQuery(source: DdysQuery = {}, keys: string[], limits: QueryLimits = {}): Record<string, string | number> {
   const out: Record<string, string | number> = {};
   for (const key of keys) {
     if (!(key in source)) continue;

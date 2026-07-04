@@ -3,6 +3,13 @@ import 'server-only';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import type { DdysConfig } from '../client/config';
 
+export interface DdysRevalidateInput {
+  tag?: string;
+  tagProfile?: string | { expire?: number };
+  path?: string;
+  pathType?: 'layout' | 'page';
+}
+
 export function ttlForPath(path: string, config: DdysConfig): number {
   if (/^\/(types|genres|regions|calendar)$/.test(path)) return config.cache.dictionaryTtl;
   if (/^\/(latest|hot)$/.test(path)) return config.cache.freshTtl;
@@ -32,7 +39,7 @@ export function nextFetchOptions(path: string, config: DdysConfig) {
   };
 }
 
-export function revalidateDdys(input: { tag?: string; path?: string }) {
-  if (input.tag) revalidateTag(input.tag);
-  if (input.path) revalidatePath(input.path);
+export function revalidateDdys(input: DdysRevalidateInput) {
+  if (input.tag) revalidateTag(input.tag, input.tagProfile ?? 'max');
+  if (input.path) revalidatePath(input.path, input.pathType ?? 'page');
 }

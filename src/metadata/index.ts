@@ -70,20 +70,21 @@ export function createDdysMetadata(options: DdysMetadataOptions = {}): Metadata 
 
 export async function createDdysMovieMetadata(slug: string, options: DdysMovieMetadataOptions = {}): Promise<Metadata> {
   const client = createDdysServerClient(options.config);
-  const path = options.path ?? `/ddys/movie/${encodeURIComponent(slug)}`;
+  const encodedSlug = encodeURIComponent(String(slug));
+  const path = options.path ?? `/ddys/movie/${encodedSlug}`;
   try {
-    const movie = await client.movie(slug, nextFetchOptions(`/movies/${slug}`, client.config)) as DdysItem;
+    const movie = await client.movie(slug, nextFetchOptions(`/movies/${encodedSlug}`, client.config)) as DdysItem;
     const title = itemTitle(movie);
     const description = itemSummary(movie) || options.description || `${title} - DDYS`;
     const poster = itemPoster(movie) || options.fallbackImage;
-    const url = itemUrl(movie, client.config.siteBaseUrl) || path;
+    const url = options.path || itemUrl(movie, client.config.siteBaseUrl) || path;
     return metadataFromConfig(client.config, {
       ...options,
       title,
       description,
       path: url,
       images: poster ? [poster, ...(options.images ?? [])] : options.images
-    }, 'video.movie');
+    });
   } catch (error) {
     if (options.throwOnError) throw error;
     return metadataFromConfig(client.config, {
@@ -183,7 +184,7 @@ export function createDdysMovieJsonLd(movie: DdysItem, configInput: DdysConfigIn
   });
 }
 
-function metadataFromConfig(config: DdysConfig, options: DdysMetadataOptions, type: 'website' | 'video.movie' = 'website'): Metadata {
+function metadataFromConfig(config: DdysConfig, options: DdysMetadataOptions): Metadata {
   const siteName = options.siteName ?? 'DDYS';
   const title = options.title ?? siteName;
   const description = options.description ?? 'DDYS API powered movie and video experience.';
@@ -203,7 +204,7 @@ function metadataFromConfig(config: DdysConfig, options: DdysMetadataOptions, ty
       description,
       url: canonical,
       siteName,
-      type,
+      type: 'website',
       images
     },
     twitter: {

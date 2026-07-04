@@ -189,7 +189,7 @@ async function checkRouteHandlers() {
   const diagnostics = await read('src/route-handlers/diagnostics.ts');
   assert(diagnostics.includes('createDdysDiagnosticsRouteHandler') && diagnostics.includes('safeDdysConfig') && diagnostics.includes('diagnostics.enabled') && diagnostics.includes('ddysDiagnosticsTestPOST'), 'diagnostics route handler must gate, hide secrets, and test API.');
   const revalidate = await read('src/route-handlers/revalidate.ts');
-  assert(revalidate.includes('DDYS_REVALIDATE_TOKEN') && revalidate.includes('x-ddys-revalidate-token') && revalidate.includes('revalidateDdys'), 'revalidate route handler must validate token and revalidate.');
+  assert(revalidate.includes('DDYS_REVALIDATE_TOKEN') && revalidate.includes('x-ddys-revalidate-token') && revalidate.includes('revalidateDdys') && revalidate.includes('tagProfile') && revalidate.includes('pathType'), 'revalidate route handler must validate token and revalidate.');
 }
 
 async function checkMetadata() {
@@ -197,13 +197,14 @@ async function checkMetadata() {
   for (const fragment of ['createDdysMetadata', 'createDdysMovieMetadata', 'createDdysSitemap', 'createDdysRobots', 'createDdysManifest', 'createDdysMovieJsonLd', 'MetadataRoute', 'nextFetchOptions', 'joinPath', 'throwOnError']) {
     assert(metadata.includes(fragment), `metadata helper missing ${fragment}.`);
   }
+  assert(metadata.includes('encodedSlug') && metadata.includes('options.path || itemUrl') && !metadata.includes('video.movie'), 'movie metadata must encode slugs, prefer local canonical paths, and use Next-safe Open Graph types.');
 }
 
 async function checkActionsAndComponents() {
   const action = await read('src/actions/request.ts');
   assert(action.trimStart().startsWith("'use server';") && action.includes('submitDdysRequestAction') && action.includes('FormData'), 'request action must be a Server Action.');
   const revalidate = await read('src/actions/revalidate.ts');
-  assert(revalidate.trimStart().startsWith("'use server';") && revalidate.includes('revalidateDdysAction') && revalidate.includes('DDYS_REVALIDATE_TOKEN'), 'revalidate action must be a protected Server Action.');
+  assert(revalidate.trimStart().startsWith("'use server';") && revalidate.includes('revalidateDdysAction') && revalidate.includes('DDYS_REVALIDATE_TOKEN') && revalidate.includes('tagProfile') && revalidate.includes('pathType'), 'revalidate action must be a protected Server Action.');
   const view = await read('src/components/view.tsx');
   for (const viewName of ['latest', 'hot', 'movies', 'search', 'collections', 'shares', 'requests', 'activities', 'movie', 'types', 'genres', 'regions']) {
     assert(view.includes(`case '${viewName}'`), `DdysView missing ${viewName}.`);
