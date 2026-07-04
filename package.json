@@ -1,7 +1,7 @@
 {
   "name": "ddys-nextjs",
   "version": "0.1.0",
-  "description": "Official Next.js integration for the DDYS API with App Router pages, Server Components, Route Handlers, caching, diagnostics, and request form.",
+  "description": "Official Next.js integration for the DDYS API with App Router pages, Server Components, Route Handlers, metadata, caching, diagnostics, and request form.",
   "type": "module",
   "license": "MIT",
   "homepage": "https://ddys.io",
@@ -20,6 +20,8 @@
     "app-router",
     "server-components",
     "route-handlers",
+    "metadata",
+    "seo",
     "movies",
     "video",
     "api"
@@ -55,6 +57,10 @@
     "./route-handlers": {
       "types": "./src/route-handlers/index.ts",
       "import": "./src/route-handlers/index.ts"
+    },
+    "./metadata": {
+      "types": "./src/metadata/index.ts",
+      "import": "./src/metadata/index.ts"
     },
     "./styles.css": "./src/styles/ddys.css"
   },

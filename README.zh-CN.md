@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-`ddys-nextjs` 是低端影视 API 的官方 Next.js App Router 集成包，提供 TypeScript API Client、Server Components、Client Components、Route Handler 工厂、Server Actions、缓存辅助、诊断接口、安全求片表单和 App Router 示例。
+`ddys-nextjs` 是低端影视 API 的官方 Next.js App Router 集成包，提供 TypeScript API Client、Server Components、Client Components、Route Handler 工厂、Server Actions、Metadata 辅助、缓存辅助、诊断接口、安全求片表单和可直接复制的 App Router 示例。
 
 ## 安装
 
@@ -91,9 +91,34 @@ export default async function Page() {
 - `DdysRequestForm`
 - `DdysDiagnostics`
 
+Client Component 文件应从 `ddys-nextjs/components/client` 导入交互组件，避免 server-only 辅助逻辑进入浏览器 bundle。
+
+## Metadata 与 SEO
+
+`ddys-nextjs/metadata` 是服务端专用入口，覆盖 App Router 的 metadata 约定：
+
+```tsx
+import { createDdysMetadata, createDdysMovieMetadata } from 'ddys-nextjs/metadata';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = createDdysMetadata({
+  title: 'DDYS',
+  path: '/ddys'
+});
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return createDdysMovieMetadata(slug, {
+    path: `/ddys/movie/${slug}`
+  });
+}
+```
+
+辅助函数包括 `createDdysMetadata`、`createDdysMovieMetadata`、`createDdysSitemap`、`createDdysRobots`、`createDdysManifest`、`createDdysMovieJsonLd`。
+
 ## App Router 页面
 
-`examples/app-router` 目录提供可复制的路由：
+`examples/app-router` 目录提供可复制路由：
 
 - `/ddys/latest`
 - `/ddys/hot`
@@ -109,6 +134,9 @@ export default async function Page() {
 - `/ddys/regions`
 - `/ddys/request`
 - `/ddys/diagnostics`
+- `/sitemap.xml`
+- `/robots.txt`
+- `/manifest.webmanifest`
 
 ## Route Handlers
 
@@ -139,8 +167,6 @@ DDYS_REQUEST_FORM_ENABLED=true
 ```
 
 求片服务会在调用低端影视认证 API 前校验标题、年份、类型、豆瓣 ID、IMDb ID、蜜罐字段、表单 token 和单身份提交频率。表单 token 在服务端生成后传给 `DdysRequestForm`。
-
-Client Component 文件应从 `ddys-nextjs/components/client` 导入交互组件，避免 server-only 辅助逻辑进入浏览器 bundle。
 
 ## 缓存与刷新
 

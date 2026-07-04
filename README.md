@@ -2,7 +2,7 @@
 
 [中文](README.zh-CN.md)
 
-`ddys-nextjs` is the official Next.js App Router integration for the DDYS API. It provides a TypeScript API client, Server Components, Client Components, Route Handler factories, Server Actions, cache helpers, diagnostics, secure request-form handling, and App Router examples.
+`ddys-nextjs` is the official Next.js App Router integration for the DDYS API. It provides a TypeScript API client, Server Components, Client Components, Route Handler factories, Server Actions, Metadata helpers, cache helpers, diagnostics, secure request-form handling, and ready-to-copy App Router examples.
 
 ## Installation
 
@@ -91,6 +91,31 @@ Available components:
 - `DdysRequestForm`
 - `DdysDiagnostics`
 
+Client Component files should import interactive widgets from `ddys-nextjs/components/client` so that server-only helpers never enter a browser bundle.
+
+## Metadata And SEO
+
+`ddys-nextjs/metadata` is server-only and covers App Router metadata conventions:
+
+```tsx
+import { createDdysMetadata, createDdysMovieMetadata } from 'ddys-nextjs/metadata';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = createDdysMetadata({
+  title: 'DDYS',
+  path: '/ddys'
+});
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return createDdysMovieMetadata(slug, {
+    path: `/ddys/movie/${slug}`
+  });
+}
+```
+
+Helpers include `createDdysMetadata`, `createDdysMovieMetadata`, `createDdysSitemap`, `createDdysRobots`, `createDdysManifest`, and `createDdysMovieJsonLd`.
+
 ## App Router Pages
 
 The `examples/app-router` folder includes ready-to-copy routes:
@@ -109,6 +134,9 @@ The `examples/app-router` folder includes ready-to-copy routes:
 - `/ddys/regions`
 - `/ddys/request`
 - `/ddys/diagnostics`
+- `/sitemap.xml`
+- `/robots.txt`
+- `/manifest.webmanifest`
 
 ## Route Handlers
 
@@ -139,8 +167,6 @@ DDYS_REQUEST_FORM_ENABLED=true
 ```
 
 The request service validates title, year, type, Douban ID, IMDb ID, honeypot, form token, and per-identity rate limit before using the authenticated DDYS API. The form token is created server-side and should be rendered into `DdysRequestForm`.
-
-Client Component files should import interactive widgets from `ddys-nextjs/components/client` so that server-only helpers never enter a browser bundle.
 
 ## Cache And Revalidation
 

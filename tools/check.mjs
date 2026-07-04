@@ -34,6 +34,7 @@ const requiredFiles = [
   'src/route-handlers/request.ts',
   'src/route-handlers/diagnostics.ts',
   'src/route-handlers/revalidate.ts',
+  'src/metadata/index.ts',
   'src/components/card.tsx',
   'src/components/diagnostics.tsx',
   'src/components/grid.tsx',
@@ -72,6 +73,9 @@ const exampleFiles = [
   'examples/app-router/app/ddys/regions/page.tsx',
   'examples/app-router/app/ddys/request/page.tsx',
   'examples/app-router/app/ddys/diagnostics/page.tsx',
+  'examples/app-router/app/sitemap.ts',
+  'examples/app-router/app/robots.ts',
+  'examples/app-router/app/manifest.ts',
   'examples/app-router/app/api/ddys/[route]/route.ts',
   'examples/app-router/app/api/ddys/request/route.ts',
   'examples/app-router/app/api/ddys/diagnostics/route.ts',
@@ -94,6 +98,7 @@ await checkPackage();
 await checkClient();
 await checkServerOnly();
 await checkRouteHandlers();
+await checkMetadata();
 await checkActionsAndComponents();
 await checkExamples();
 await checkAssets();
@@ -132,7 +137,7 @@ async function checkPackage() {
   const pkg = JSON.parse(await read('package.json'));
   assert(pkg.name === 'ddys-nextjs', 'package name mismatch.');
   assert(pkg.type === 'module', 'package must be ESM.');
-  assert(pkg.exports?.['./server'] && pkg.exports?.['./route-handlers'] && pkg.exports?.['./actions'] && pkg.exports?.['./components'] && pkg.exports?.['./components/client'] && pkg.exports?.['./styles.css'], 'package exports must expose server, route-handlers, actions, components, client components, and styles.');
+  assert(pkg.exports?.['./server'] && pkg.exports?.['./route-handlers'] && pkg.exports?.['./actions'] && pkg.exports?.['./metadata'] && pkg.exports?.['./components'] && pkg.exports?.['./components/client'] && pkg.exports?.['./styles.css'], 'package exports must expose server, route-handlers, actions, metadata, components, client components, and styles.');
   assert(pkg.peerDependencies?.next && pkg.peerDependencies?.react && pkg.peerDependencies?.['react-dom'], 'package must declare Next and React peer dependencies.');
   assert(pkg.dependencies?.['server-only'], 'package must depend on server-only.');
   assert(pkg.scripts?.check === 'node tools/check.mjs', 'package check script mismatch.');
@@ -159,7 +164,7 @@ async function checkClient() {
 }
 
 async function checkServerOnly() {
-  for (const file of ['src/server/config.ts', 'src/server/cache.ts', 'src/server/client.ts', 'src/server/request-service.ts']) {
+  for (const file of ['src/server/config.ts', 'src/server/cache.ts', 'src/server/client.ts', 'src/server/request-service.ts', 'src/metadata/index.ts']) {
     const text = await read(file);
     assert(text.includes("import 'server-only'"), `${file} must import server-only.`);
   }
@@ -185,6 +190,13 @@ async function checkRouteHandlers() {
   assert(diagnostics.includes('createDdysDiagnosticsRouteHandler') && diagnostics.includes('safeDdysConfig') && diagnostics.includes('diagnostics.enabled') && diagnostics.includes('ddysDiagnosticsTestPOST'), 'diagnostics route handler must gate, hide secrets, and test API.');
   const revalidate = await read('src/route-handlers/revalidate.ts');
   assert(revalidate.includes('DDYS_REVALIDATE_TOKEN') && revalidate.includes('x-ddys-revalidate-token') && revalidate.includes('revalidateDdys'), 'revalidate route handler must validate token and revalidate.');
+}
+
+async function checkMetadata() {
+  const metadata = await read('src/metadata/index.ts');
+  for (const fragment of ['createDdysMetadata', 'createDdysMovieMetadata', 'createDdysSitemap', 'createDdysRobots', 'createDdysManifest', 'createDdysMovieJsonLd', 'MetadataRoute', 'nextFetchOptions', 'joinPath', 'throwOnError']) {
+    assert(metadata.includes(fragment), `metadata helper missing ${fragment}.`);
+  }
 }
 
 async function checkActionsAndComponents() {
@@ -217,7 +229,11 @@ async function checkExamples() {
   assert((await read('examples/app-router/app/api/ddys/[route]/route.ts')).includes('ddysProxyGET as GET'), 'proxy example route export mismatch.');
   assert((await read('examples/app-router/app/api/ddys/request/route.ts')).includes('ddysRequestPOST as POST'), 'request example route export mismatch.');
   assert((await read('examples/app-router/app/ddys/movie/[slug]/page.tsx')).includes('Promise<{ slug: string }>'), 'dynamic movie page must support Next 15/16 params promise.');
+  assert((await read('examples/app-router/app/ddys/movie/[slug]/page.tsx')).includes('generateMetadata') && (await read('examples/app-router/app/ddys/movie/[slug]/page.tsx')).includes('createDdysMovieMetadata'), 'movie page must include generateMetadata.');
   assert((await read('examples/app-router/app/ddys/movies/page.tsx')).includes('searchParams: Promise'), 'searchParams examples must support Next 15/16 promise props.');
+  assert((await read('examples/app-router/app/sitemap.ts')).includes('createDdysSitemap'), 'sitemap example must use metadata helper.');
+  assert((await read('examples/app-router/app/robots.ts')).includes('createDdysRobots'), 'robots example must use metadata helper.');
+  assert((await read('examples/app-router/app/manifest.ts')).includes('createDdysManifest'), 'manifest example must use metadata helper.');
 }
 
 async function checkAssets() {
@@ -238,7 +254,7 @@ async function checkDocs() {
   const en = await read('README.md');
   const zh = await read('README.zh-CN.md');
   assert(en.includes('[中文](README.zh-CN.md)') && zh.includes('[English](README.md)'), 'READMEs must link to each other.');
-  for (const fragment of ['ddys-nextjs', 'transpilePackages', 'DDYS_API_KEY', 'Route Handlers', 'Server Components', 'Server Actions', 'DdysRequestForm', 'revalidateDdysAction', '/api/ddys/[route]', '/ddys/movie/[slug]', 'ddys-nextjs/components/client']) {
+  for (const fragment of ['ddys-nextjs', 'transpilePackages', 'DDYS_API_KEY', 'Route Handlers', 'Server Components', 'Server Actions', 'Metadata', 'createDdysMovieMetadata', 'createDdysSitemap', 'DdysRequestForm', 'revalidateDdysAction', '/api/ddys/[route]', '/ddys/movie/[slug]', 'ddys-nextjs/components/client']) {
     assert(en.includes(fragment) && zh.includes(fragment), `READMEs missing ${fragment}.`);
   }
   assert(en.includes('Do not prefix them with `NEXT_PUBLIC_`') && zh.includes('不要加 `NEXT_PUBLIC_`'), 'READMEs must document secret environment variables.');
@@ -258,7 +274,7 @@ async function checkForbiddenFiles() {
 }
 
 async function checkForbiddenText() {
-  const patterns = ['ghp_', 'github_pat_', 'npm_', '\uFFFD', '????'];
+  const patterns = ['ghp_', 'github_pat_', 'npm_', '\uFFFD', '????', '涓', '闆', '鏄', '鍖', '绔'];
   for (const full of await listFiles(root)) {
     const rel = slash(path.relative(root, full));
     if (!isTextFile(rel) || rel === 'tools/check.mjs') continue;
