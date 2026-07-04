@@ -1,0 +1,96 @@
+{
+  "name": "ddys-nextjs",
+  "version": "0.1.0",
+  "description": "Official Next.js integration for the DDYS API with App Router pages, Server Components, Route Handlers, caching, diagnostics, and request form.",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://ddys.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddysiodev/ddys-nextjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ddysiodev/ddys-nextjs/issues"
+  },
+  "keywords": [
+    "ddys",
+    "nextjs",
+    "next",
+    "react",
+    "app-router",
+    "server-components",
+    "route-handlers",
+    "movies",
+    "video",
+    "api"
+  ],
+  "sideEffects": [
+    "./src/styles/ddys.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./client": {
+      "types": "./src/client/index.ts",
+      "import": "./src/client/index.ts"
+    },
+    "./server": {
+      "types": "./src/server/index.ts",
+      "import": "./src/server/index.ts"
+    },
+    "./components": {
+      "types": "./src/components/index.ts",
+      "import": "./src/components/index.ts"
+    },
+    "./components/client": {
+      "types": "./src/components/client.ts",
+      "import": "./src/components/client.ts"
+    },
+    "./actions": {
+      "types": "./src/actions/index.ts",
+      "import": "./src/actions/index.ts"
+    },
+    "./route-handlers": {
+      "types": "./src/route-handlers/index.ts",
+      "import": "./src/route-handlers/index.ts"
+    },
+    "./styles.css": "./src/styles/ddys.css"
+  },
+  "files": [
+    "src",
+    "examples",
+    "public",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    ".env.example",
+    "next.config.example.mjs"
+  ],
+  "peerDependencies": {
+    "next": ">=14.2.0",
+    "react": ">=18.2.0 || >=19.0.0",
+    "react-dom": ">=18.2.0 || >=19.0.0"
+  },
+  "dependencies": {
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  },
+  "scripts": {
+    "check": "node tools/check.mjs",
+    "test": "node tools/check.mjs && node --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

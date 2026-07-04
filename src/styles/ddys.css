@@ -1,0 +1,228 @@
+.ddys-next {
+  color: #17202a;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.55;
+}
+
+.ddys-next-items {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(var(--ddys-next-columns, 4), minmax(0, 1fr));
+}
+
+.ddys-next-layout-list .ddys-next-items,
+.ddys-next-layout-compact .ddys-next-items {
+  grid-template-columns: 1fr;
+}
+
+.ddys-next-card {
+  background: #fff;
+  border: 1px solid #d6e0e8;
+  border-radius: 8px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ddys-next-layout-list .ddys-next-card {
+  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+  grid-template-rows: 1fr;
+}
+
+.ddys-next-poster {
+  aspect-ratio: 2 / 3;
+  background: #eef3f6;
+  overflow: hidden;
+}
+
+.ddys-next-poster img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.ddys-next-card-body {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.ddys-next-title {
+  font-size: 16px;
+  line-height: 1.3;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ddys-next-title a {
+  color: #0d5e8c;
+  text-decoration: none;
+}
+
+.ddys-next-title a:hover {
+  text-decoration: underline;
+}
+
+.ddys-next-meta,
+.ddys-next-summary,
+.ddys-next-status {
+  color: #586777;
+  font-size: 13px;
+}
+
+.ddys-next-empty,
+.ddys-next-description,
+.ddys-next-source-group,
+.ddys-next-diagnostics {
+  background: #fff;
+  border: 1px solid #d6e0e8;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.ddys-next-detail,
+.ddys-next-sources,
+.ddys-next-related {
+  display: grid;
+  gap: 16px;
+}
+
+.ddys-next-resource {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ddys-next-resource a,
+.ddys-next button {
+  border: 1px solid #c9d7e3;
+  border-radius: 8px;
+  color: #17202a;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 650;
+  min-height: 38px;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
+.ddys-next button {
+  background: #17324d;
+  border-color: #17324d;
+  color: #fff;
+  cursor: pointer;
+}
+
+.ddys-next-search,
+.ddys-next-request-form {
+  align-items: end;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ddys-next-request-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ddys-next-search input,
+.ddys-next-search select,
+.ddys-next-request-form input,
+.ddys-next-request-form select,
+.ddys-next-request-form textarea {
+  border: 1px solid #b9cad8;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font: inherit;
+  min-height: 40px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.ddys-next-request-form label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ddys-next-request-form textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.ddys-next-honeypot {
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+}
+
+.ddys-next-status {
+  margin: 0;
+  min-height: 22px;
+}
+
+.ddys-next-status.is-error {
+  color: #8f2f16;
+}
+
+.ddys-next-diagnostics {
+  display: grid;
+  gap: 12px;
+}
+
+.ddys-next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ddys-next-diagnostics pre {
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 900px) {
+  .ddys-next-items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .ddys-next-items,
+  .ddys-next-layout-list .ddys-next-card,
+  .ddys-next-search,
+  .ddys-next-request-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .ddys-next-theme-auto {
+    color: #ecf2f6;
+  }
+
+  .ddys-next-theme-auto .ddys-next-card,
+  .ddys-next-theme-auto .ddys-next-empty,
+  .ddys-next-theme-auto .ddys-next-description,
+  .ddys-next-theme-auto .ddys-next-source-group,
+  .ddys-next-theme-auto .ddys-next-diagnostics {
+    background: #151f29;
+    border-color: #304253;
+  }
+
+  .ddys-next-theme-auto .ddys-next-meta,
+  .ddys-next-theme-auto .ddys-next-summary,
+  .ddys-next-theme-auto .ddys-next-status {
+    color: #a7b7c3;
+  }
+
+  .ddys-next-theme-auto .ddys-next-title a {
+    color: #83c7e8;
+  }
+}

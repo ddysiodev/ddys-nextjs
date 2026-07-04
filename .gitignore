@@ -1,0 +1,11 @@
+/dist/
+/node_modules/
+/.next/
+/out/
+/coverage/
+*.log
+*.tmp
+*.cache
+.env
+.env.*
+!.env.example
